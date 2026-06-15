@@ -2,7 +2,7 @@
 // a `focus` that foregrounds the relevant section of the unified tool. Single
 // source for nav, sitemap and the /calculators index.
 
-export type Focus = "occupant-load" | "egress" | "exits" | "fixtures" | "table";
+export type Focus = "occupant-load" | "egress" | "exits" | "fixtures" | "table" | "building" | "sign";
 
 export interface Calculator {
   slug: string;
@@ -15,6 +15,17 @@ export interface Calculator {
 }
 
 export const CALCULATORS: Calculator[] = [
+  {
+    slug: "building-occupant-load-calculator",
+    title: "Whole-Building Occupant Load Calculator (Multi-Room)",
+    h1: "Whole-Building Occupant Load Calculator",
+    description:
+      "Add every space in your building or floor and get the total occupant load, the minimum number of exits and the egress width required — the multi-room IBC calculation used for permit sets. Free.",
+    blurb:
+      "Real occupant-load calculations sum many spaces. Add a row for each space (dining, kitchen, office, storage…), and OccupancyCalc computes each one from its own IBC Table 1004.5 factor, sums them for the floor/building total, and sizes the exits and egress width to that total.",
+    focus: "building",
+    keyword: "building occupant load calculator",
+  },
   {
     slug: "occupant-load-calculator",
     title: "Occupant Load Calculator (IBC Table 1004.5)",
@@ -69,6 +80,17 @@ export const CALCULATORS: Calculator[] = [
       "IBC Table 2902.1 sets the minimum plumbing fixtures from the occupant load, split 50/50 between the sexes (§2902.2). Choose the occupancy and enter the load to size water closets, lavatories, drinking fountains and service sinks.",
     focus: "fixtures",
     keyword: "plumbing fixture calculator",
+  },
+  {
+    slug: "maximum-occupancy-sign",
+    title: "Maximum Occupancy Sign Generator (Free Printable)",
+    h1: "Maximum Occupancy Sign Generator",
+    description:
+      "Free printable maximum-occupancy sign. Calculate your space's occupant load (or enter it), then print a clean 8.5×11 maximum-occupancy sign to post per IBC §1004.9.",
+    blurb:
+      "Assembly occupancies must post an approved maximum-occupancy sign near the main exit (IBC §1004.9). Calculate the number from your space's area, or type it in, then print a clean full-page sign — free, no signup.",
+    focus: "sign",
+    keyword: "maximum occupancy sign",
   },
   {
     slug: "occupant-load-factor-table",

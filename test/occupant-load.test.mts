@@ -1,4 +1,4 @@
-import { computeOccupantLoad } from "../lib/occupant-load.ts";
+import { computeOccupantLoad, fixedSeatLoad, summarizeBuilding } from "../lib/occupant-load.ts";
 import { SPACE_TYPES, getSpaceType } from "../lib/occupancy-factors.ts";
 import { eq, ok, done } from "./_assert.mts";
 
@@ -59,5 +59,33 @@ eq(getSpaceType("mercantile")!.factor, 60, "mercantile 60 (2021 consolidated)");
 eq(getSpaceType("kitchens-commercial")!.factor, 200, "kitchens 200");
 eq(getSpaceType("gaming-floors")!.factor, 11, "gaming 11");
 eq(getSpaceType("inst-inpatient")!.factor, 240, "inpatient 240");
+
+// Concentrated business use (§1004.8) = 50 gross.
+eq(getSpaceType("concentrated-business")!.factor, 50, "concentrated business 50");
+eq(getSpaceType("concentrated-business")!.basis, "gross", "concentrated business gross");
+eq(computeOccupantLoad({ spaceSlug: "concentrated-business", area: 5000 })!.occupantLoad, 100, "5000/50 = 100");
+
+// Fixed-seat occupant load (§1004.6).
+eq(fixedSeatLoad("seats", 250), 250, "250 fixed seats = 250");
+eq(fixedSeatLoad("bench", 360), 20, "360 in bench ÷ 18 = 20");
+eq(fixedSeatLoad("bench", 350), 20, "350 in bench rounds up to 20 (ceil 19.4)");
+eq(fixedSeatLoad("booth", 240), 10, "240 in booth ÷ 24 = 10");
+eq(fixedSeatLoad("seats", 0), 0, "0 seats = 0");
+eq(fixedSeatLoad("bench", NaN), 0, "NaN bench = 0");
+
+// Whole-building aggregation: each space computed then summed.
+const b = summarizeBuilding([
+  { id: "a", spaceSlug: "assembly-unconcentrated-tables-chairs", area: 1500 }, // 100
+  { id: "b", spaceSlug: "kitchens-commercial", area: 400 }, // ceil(400/200) = 2
+  { id: "c", spaceSlug: "business-areas", area: 9000 }, // 60
+]);
+eq(b.total, 162, "building total 100+2+60 = 162");
+eq(b.rows.length, 3, "3 rows");
+eq(b.minExits, 2, "162 occ → 2 exits");
+eq(b.otherWidthBase, 32.4, "162 × 0.2 = 32.4 in doors");
+eq(b.stairWidthBase, 48.6, "162 × 0.3 = 48.6 in stairs");
+// Empty building → zeros.
+eq(summarizeBuilding([]).total, 0, "empty building total 0");
+eq(summarizeBuilding([]).minExits, 0, "empty building 0 exits");
 
 done("occupant-load");

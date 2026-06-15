@@ -36,6 +36,17 @@ export default function Home() {
       </section>
 
       <section>
+        <Link href="/calculators/building-occupant-load-calculator"
+          className="flex flex-col gap-1 rounded-xl border border-sky-200 bg-sky-50 p-5 hover:border-sky-300 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="font-semibold text-slate-900">Calculating a whole building or floor?</div>
+            <div className="text-sm text-slate-600">Add every space and get the total occupant load, exits and egress width — the full permit calculation.</div>
+          </div>
+          <span className="mt-1 shrink-0 font-medium text-sky-700 sm:mt-0">Whole-building calculator →</span>
+        </Link>
+      </section>
+
+      <section>
         <h2 className="text-xl font-semibold text-slate-900">All calculators</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {CALCULATORS.map((c) => (

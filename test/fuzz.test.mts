@@ -20,8 +20,8 @@ for (const s of SPACE_TYPES) {
     ok(Number.isInteger(ol) && ol >= 0, `${s.slug}@${a}: OL integer ≥ 0 (got ${ol})`);
     ok(Number.isFinite(r.egress.stairWidthBase) && r.egress.stairWidthBase >= 0, `${s.slug}@${a}: stair width finite ≥0`);
     ok(Number.isFinite(r.egress.otherWidthBase) && r.egress.otherWidthBase >= 0, `${s.slug}@${a}: other width finite ≥0`);
-    ok([2, 3, 4].includes(r.egress.minExits), `${s.slug}@${a}: exits in {2,3,4}`);
-    ok(r.egress.canUseSingleExit === ol <= r.egress.singleExitMax, `${s.slug}@${a}: single-exit consistent`);
+    ok([0, 2, 3, 4].includes(r.egress.minExits), `${s.slug}@${a}: exits in {0,2,3,4}`);
+    ok(r.egress.canUseSingleExit === (ol > 0 && ol <= r.egress.singleExitMax), `${s.slug}@${a}: single-exit consistent`);
   }
 }
 
@@ -44,7 +44,7 @@ for (const g of GROUPS) {
     const e = computeEgress(l, g);
     cases++;
     ok(Number.isFinite(e.stairWidthBase) && e.stairWidthBase >= 0, `egress ${g}@${l} stair finite ≥0`);
-    ok([2, 3, 4].includes(e.minExits), `egress ${g}@${l} exits valid`);
+    ok([0, 2, 3, 4].includes(e.minExits), `egress ${g}@${l} exits valid`);
   }
 }
 

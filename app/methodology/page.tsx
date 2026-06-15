@@ -12,9 +12,11 @@ export const metadata: Metadata = {
 
 const SOURCES = [
   { label: "Table 1004.5 — Maximum Floor Area Allowances Per Occupant", url: "https://up.codes/s/areas-without-fixed-seating" },
+  { label: "§1004.6 — Fixed seating; §1004.8 — Concentrated business use", url: "https://up.codes/s/fixed-seating" },
   { label: "§1005.3 — Required egress capacity (width per occupant)", url: "https://up.codes/s/required-capacity-based-on-occupant-load" },
-  { label: "§1006.2.1 / §1006.3 — Exits required & single-exit ceilings", url: "https://up.codes/s/egress-based-on-occupant-load-and-common-path-of-egress-travel-distance" },
-  { label: "Table 2902.1 — Minimum plumbing fixtures", url: "https://up.codes/s/minimum-number-of-fixtures" },
+  { label: "§1006.2.1 / §1006.3 — Exits required, single-exit ceilings & common path", url: "https://up.codes/s/egress-based-on-occupant-load-and-common-path-of-egress-travel-distance" },
+  { label: "Table 1017.2 — Exit access travel distance; §1007.1.1 — Exit separation", url: "https://up.codes/s/exit-access-travel-distance" },
+  { label: "Table 2902.1 / IPC Table 403.1 — Minimum plumbing fixtures", url: "https://up.codes/s/minimum-number-of-fixtures" },
 ];
 
 export default function Methodology() {
@@ -35,7 +37,10 @@ export default function Methodology() {
           <li><strong>Occupant load</strong> = floor area ÷ Table 1004.5 factor, rounded up (§1004.2).</li>
           <li><strong>Exits required</strong>: 1–500 → 2, 501–1,000 → 3, &gt;1,000 → 4 (§1006.3.1); single-exit ceiling by group (Table 1006.2.1: 49 for A/B/E/F/M/U, 29 for S).</li>
           <li><strong>Egress width</strong> = load × 0.3 in (stairs) or 0.2 in (other), reduced to 0.2/0.15 with sprinklers + voice alarm (§1005.3).</li>
-          <li><strong>Plumbing fixtures</strong> = load split 50/50 (§2902.2) run through the Table 2902.1 ratios.</li>
+          <li><strong>Plumbing fixtures</strong> = load split 50/50 (IPC §403.1.1) run through the Table 2902.1 ratios.</li>
+          <li><strong>Fixed seating</strong> (§1004.6) = seat count; bench at 1 person per 18 in; booth at 1 per 24 in.</li>
+          <li><strong>Whole building</strong> = each space computed from its own factor, rounded up, then summed; exits/width sized to the total.</li>
+          <li><strong>Travel distance &amp; exit separation</strong> = Table 1017.2 and §1007.1.1 (½ the area diagonal, ⅓ if sprinklered).</li>
         </ul>
       </div>
       <div>

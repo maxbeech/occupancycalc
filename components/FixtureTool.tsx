@@ -17,13 +17,12 @@ export function FixtureTool({ initialOcc = "restaurant", initialLoad = 200 }:
         <h2 className="text-sm font-semibold text-slate-900">Occupancy & load</h2>
         <div className="mt-3 space-y-4">
           <Field label="Occupancy (IBC Table 2902.1)" hint={occ.examples}>
-            <select className={inputCls} value={occSlug} aria-label="Occupancy"
-              onChange={(ev) => setOccSlug(ev.target.value)}>
+            <select className={inputCls} value={occSlug} onChange={(ev) => setOccSlug(ev.target.value)}>
               {FIXTURE_OCCUPANCIES.map((o) => <option key={o.slug} value={o.slug}>{o.label}</option>)}
             </select>
           </Field>
-          <Field label="Occupant load (people)" hint="Split 50/50 male/female per §2902.2.">
-            <NumberField value={load} min={0} max={1_000_000} step={10} onChange={setLoad} ariaLabel="Occupant load" />
+          <Field label="Occupant load (people)" hint="Split 50/50 male/female per IPC §403.1.1.">
+            <NumberField value={load} min={0} max={1_000_000} step={10} onChange={setLoad} />
           </Field>
           <div className="rounded-lg bg-slate-50 p-3 text-xs text-slate-600">
             Ratios used: WC {occ.wcMale.label} (M) / {occ.wcFemale.label} (F); lavatories {occ.lavMale.label};
@@ -42,7 +41,7 @@ export function FixtureTool({ initialOcc = "restaurant", initialLoad = 200 }:
             <Stat label="Drinking fountains" value={f.drinkingFountains} />
             <Stat label="Service sinks" value={f.serviceSinks} />
           </div>
-          <p className="mt-3 text-xs text-slate-500">Per-sex load: {f.perSex} (half of {load.toLocaleString()}, rounded up).</p>
+          <p className="mt-3 text-xs text-slate-600">Per-sex load: {f.perSex} (half of {load.toLocaleString()}, rounded up).</p>
         </Card>
         {occ.verify && (
           <div className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">

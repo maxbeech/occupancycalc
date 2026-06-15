@@ -4,7 +4,7 @@
 // factor, ROUNDED UP to the next whole number (IBC §1004.2 fractional rule).
 
 import { getSpaceType, type SpaceType } from "./occupancy-factors";
-import { computeEgress, type EgressResult } from "./egress";
+import { computeEgress, minExitsRequired, EGRESS_WIDTH, type EgressResult } from "./egress";
 
 export interface OccupantLoadInput {
   spaceSlug: string;
@@ -61,4 +61,65 @@ export function computeOccupantLoad(input: OccupantLoadInput): OccupantLoadResul
 function clamp(n: number, min: number, max: number): number {
   if (!Number.isFinite(n)) return min;
   return Math.min(max, Math.max(min, n));
+}
+
+// Whole-building / multi-space aggregation. IBC computes each space's occupant
+// load separately (area ÷ its own factor, rounded up) then SUMS them for the
+// floor/building total; egress for the story is sized to that total. This is the
+// real permit workflow no single-room competitor offers.
+export interface BuildingSpace {
+  id: string;
+  spaceSlug: string;
+  area: number;
+}
+export interface BuildingRow {
+  id: string;
+  label: string;
+  area: number;
+  load: number;
+}
+export interface BuildingSummary {
+  rows: BuildingRow[];
+  total: number;
+  minExits: number;
+  stairWidthBase: number;
+  stairWidthReduced: number;
+  otherWidthBase: number;
+  otherWidthReduced: number;
+}
+
+export function summarizeBuilding(spaces: BuildingSpace[]): BuildingSummary {
+  const rows: BuildingRow[] = spaces.map((s) => {
+    const st = getSpaceType(s.spaceSlug);
+    const r = computeOccupantLoad({ spaceSlug: s.spaceSlug, area: s.area });
+    return { id: s.id, label: st?.label ?? s.spaceSlug, area: clamp(s.area, 0, MAX_AREA), load: r?.occupantLoad ?? 0 };
+  });
+  const total = rows.reduce((a, r) => a + r.load, 0);
+  return {
+    rows,
+    total,
+    minExits: minExitsRequired(total),
+    stairWidthBase: ceil1(total * EGRESS_WIDTH.stairs.base),
+    stairWidthReduced: ceil1(total * EGRESS_WIDTH.stairs.reduced),
+    otherWidthBase: ceil1(total * EGRESS_WIDTH.other.base),
+    otherWidthReduced: ceil1(total * EGRESS_WIDTH.other.reduced),
+  };
+}
+
+function ceil1(n: number): number {
+  return Math.ceil(Math.round(n * 1000) / 100) / 10;
+}
+
+// IBC §1004.6 fixed-seating occupant load. For fixed seats with dividing arms,
+// the load is the seat count. For bench/pew seating without dividing arms it is
+// at least one person per 18 in; for booths, one person per 24 in (measured at
+// the backrest). `lengthOrCount` is seat count for "seats", inches otherwise.
+export type SeatingKind = "seats" | "bench" | "booth";
+
+export function fixedSeatLoad(kind: SeatingKind, lengthOrCount: number): number {
+  const v = Number.isFinite(lengthOrCount) ? Math.max(0, lengthOrCount) : 0;
+  if (v === 0) return 0;
+  if (kind === "seats") return Math.floor(v);
+  const per = kind === "booth" ? 24 : 18;
+  return Math.ceil(v / per);
 }

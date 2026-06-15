@@ -1,13 +1,14 @@
 import { encodeInputs, decodeInputs } from "../lib/url.ts";
 import { eq, done } from "./_assert.mts";
 
-const seed = { space: "business-areas", area: 1000 };
+const seed = { space: "business-areas", area: 1000, sprinklered: false };
 
 // Round-trip.
-const enc = encodeInputs({ space: "mercantile", area: 3000 });
+const enc = encodeInputs({ space: "mercantile", area: 3000, sprinklered: true });
 const dec = decodeInputs(enc, seed);
 eq(dec.space, "mercantile", "space round-trips");
 eq(dec.area, 3000, "area round-trips");
+eq(dec.sprinklered, true, "sprinklered round-trips");
 
 // Unknown space falls back to seed.
 eq(decodeInputs("type=bogus&area=500", seed).space, "business-areas", "bad space → seed");

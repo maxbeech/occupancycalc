@@ -4,7 +4,7 @@ import { breadcrumbLd } from "@/lib/seo";
 
 export function Breadcrumbs({ trail }: { trail: { name: string; path: string }[] }) {
   return (
-    <nav aria-label="Breadcrumb" className="mb-4 text-xs text-slate-500">
+    <nav aria-label="Breadcrumb" className="mb-4 text-xs text-slate-600">
       <JsonLd data={breadcrumbLd(trail)} />
       <ol className="flex flex-wrap items-center gap-1">
         {trail.map((t, i) => (

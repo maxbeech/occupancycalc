@@ -27,10 +27,53 @@ export const MIN_CORRIDOR_WIDTH_IN = 44; // §1020.3 (50+ occupants)
 export const MIN_CORRIDOR_WIDTH_LOW_IN = 36; // §1020.3 exception (< 50 occupants)
 
 // §1006.2.1.1 / §1006.3 — minimum number of exits / exit access doorways.
+// A 0-occupant space returns 0 (degenerate); 1+ occupants require ≥2 once the
+// single-exit ceiling is exceeded (handled in computeEgress via canUseSingleExit).
 export function minExitsRequired(occupantLoad: number): number {
+  if (occupantLoad <= 0) return 0;
   if (occupantLoad <= 500) return 2;
   if (occupantLoad <= 1000) return 3;
   return 4;
+}
+
+// Table 1006.2.1 — common path of egress travel limit (ft) by group. `null` =
+// a single exit is NOT permitted without sprinklers for that group. Values are
+// the OL>30 non-sprinklered column (the conservative single-exit case) and the
+// sprinklered column. Subgroups can vary (e.g. S-2 open parking); confirm with
+// the AHJ. Cross-confirmed (up.codes); a single-publisher caveat applies.
+export const COMMON_PATH: Record<OccGroup, { noSprinkler: number | null; sprinkler: number }> = {
+  A: { noSprinkler: 75, sprinkler: 75 },
+  E: { noSprinkler: 75, sprinkler: 75 },
+  M: { noSprinkler: 75, sprinkler: 75 },
+  B: { noSprinkler: 75, sprinkler: 100 },
+  F: { noSprinkler: 75, sprinkler: 100 },
+  U: { noSprinkler: 75, sprinkler: 75 },
+  S: { noSprinkler: 75, sprinkler: 100 },
+  R: { noSprinkler: null, sprinkler: 125 },
+  I: { noSprinkler: null, sprinkler: 75 },
+  H: { noSprinkler: null, sprinkler: 75 }, // H-4/5; H-1/2/3 = 25 ft sprinklered
+};
+
+// Table 1017.2 — exit access travel distance limit (ft), non-sprinklered /
+// sprinklered, by group (representative subgroup; verify subgroup with AHJ).
+export const TRAVEL_DISTANCE: Record<OccGroup, { noSprinkler: number | null; sprinkler: number }> = {
+  A: { noSprinkler: 200, sprinkler: 250 },
+  E: { noSprinkler: 200, sprinkler: 250 },
+  M: { noSprinkler: 200, sprinkler: 250 },
+  R: { noSprinkler: 200, sprinkler: 250 },
+  F: { noSprinkler: 200, sprinkler: 250 }, // F-1; F-2 = 300/400
+  B: { noSprinkler: 200, sprinkler: 300 },
+  S: { noSprinkler: 200, sprinkler: 250 }, // S-1; S-2 = 300/400
+  U: { noSprinkler: 300, sprinkler: 400 },
+  I: { noSprinkler: null, sprinkler: 200 }, // I-4 = 150/200
+  H: { noSprinkler: null, sprinkler: 150 }, // varies H-1..H-5 (75–200)
+};
+
+// §1007.1.1 — required separation between two exits: ≥ 1/2 the maximum overall
+// diagonal of the area, reduced to ≥ 1/3 where sprinklered (NFPA 13/13R).
+export function exitSeparation(diagonalFt: number, sprinklered: boolean): number {
+  const d = Number.isFinite(diagonalFt) ? Math.max(0, diagonalFt) : 0;
+  return Math.round(d * (sprinklered ? 1 / 3 : 1 / 2) * 10) / 10;
 }
 
 // Table 1006.2.1 — maximum occupant load served by a SINGLE exit or exit access
@@ -59,6 +102,8 @@ export interface EgressResult {
   stairWidthReduced: number;
   otherWidthBase: number;
   otherWidthReduced: number;
+  commonPath: { noSprinkler: number | null; sprinkler: number };
+  travelDistance: { noSprinkler: number | null; sprinkler: number };
 }
 
 export function computeEgress(occupantLoad: number, group: OccGroup): EgressResult {
@@ -67,14 +112,17 @@ export function computeEgress(occupantLoad: number, group: OccGroup): EgressResu
   return {
     minExits: minExitsRequired(ol),
     singleExitMax,
-    canUseSingleExit: ol <= singleExitMax,
-    stairWidthBase: round1(ol * EGRESS_WIDTH.stairs.base),
-    stairWidthReduced: round1(ol * EGRESS_WIDTH.stairs.reduced),
-    otherWidthBase: round1(ol * EGRESS_WIDTH.other.base),
-    otherWidthReduced: round1(ol * EGRESS_WIDTH.other.reduced),
+    canUseSingleExit: ol > 0 && ol <= singleExitMax,
+    // Required egress capacity is a MINIMUM, so round UP to the next 0.1 in.
+    stairWidthBase: ceil1(ol * EGRESS_WIDTH.stairs.base),
+    stairWidthReduced: ceil1(ol * EGRESS_WIDTH.stairs.reduced),
+    otherWidthBase: ceil1(ol * EGRESS_WIDTH.other.base),
+    otherWidthReduced: ceil1(ol * EGRESS_WIDTH.other.reduced),
+    commonPath: COMMON_PATH[group],
+    travelDistance: TRAVEL_DISTANCE[group],
   };
 }
 
-function round1(n: number): number {
-  return Math.round(n * 10) / 10;
+function ceil1(n: number): number {
+  return Math.ceil(Math.round(n * 1000) / 100) / 10;
 }

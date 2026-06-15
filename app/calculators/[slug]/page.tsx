@@ -4,6 +4,8 @@ import Link from "next/link";
 import { OccupancyTool } from "@/components/OccupancyTool";
 import { FixtureTool } from "@/components/FixtureTool";
 import { FactorTable } from "@/components/FactorTable";
+import { BuildingTool } from "@/components/BuildingTool";
+import { SignTool } from "@/components/SignTool";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { CALCULATORS, getCalculator } from "@/lib/calculators";
@@ -43,7 +45,9 @@ export default async function CalculatorPage({ params }: { params: Promise<{ slu
       <section>
         {c.focus === "fixtures" ? <FixtureTool />
           : c.focus === "table" ? <FactorTable />
-          : <OccupancyTool />}
+          : c.focus === "building" ? <BuildingTool />
+          : c.focus === "sign" ? <SignTool />
+          : <OccupancyTool focus={c.focus} />}
       </section>
 
       <section className="grid gap-3 sm:grid-cols-3">

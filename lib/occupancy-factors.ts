@@ -45,6 +45,7 @@ export const SPACE_TYPES: SpaceType[] = [
 
   // Business
   { slug: "business-areas", label: "Business areas", factor: 150, basis: "gross", group: "B", category: "Business", examples: "Offices, professional services, banks, clinics (outpatient)" },
+  { slug: "concentrated-business", label: "Concentrated business use (§1004.8)", factor: 50, basis: "gross", group: "B", category: "Business", examples: "Call centers, trading floors, data-processing centers — denser than typical offices" },
   { slug: "courtrooms", label: "Courtrooms — other than fixed seating areas", factor: 40, basis: "net", group: "B", category: "Business", examples: "Courtroom well and gallery standing areas" },
 
   // Mercantile

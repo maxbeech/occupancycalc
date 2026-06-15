@@ -12,7 +12,7 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
     <label className="block">
       <span className="block text-sm font-medium text-slate-700">{label}</span>
       {children}
-      {hint && <span className="mt-0.5 block text-xs text-slate-500">{hint}</span>}
+      {hint && <span className="mt-0.5 block text-xs text-slate-600">{hint}</span>}
     </label>
   );
 }
@@ -50,7 +50,7 @@ export function Stat({ label, value, sub }: { label: string; value: React.ReactN
     <div className="rounded-lg bg-slate-50 p-4">
       <div className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</div>
       <div className="mt-1 text-2xl font-bold text-slate-900">{value}</div>
-      {sub && <div className="mt-0.5 text-xs text-slate-500">{sub}</div>}
+      {sub && <div className="mt-0.5 text-xs text-slate-600">{sub}</div>}
     </div>
   );
 }

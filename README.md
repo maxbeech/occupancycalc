@@ -2,9 +2,11 @@
 
 Free building-code occupancy, egress and plumbing-fixture calculators built on the **2021 International Building Code (IBC)**.
 
-- **Occupant load** — floor area ÷ Table 1004.5 factor, rounded up (§1004.2)
-- **Egress** — minimum exits (§1006.3), single-exit ceilings (Table 1006.2.1), required width (§1005.3)
-- **Plumbing fixtures** — minimum water closets/lavatories/fountains (Table 2902.1)
+- **Occupant load** — floor area ÷ Table 1004.5 factor, rounded up (§1004.2); also dimensions (L×W) and fixed-seat (§1004.6) input
+- **Whole-building aggregator** — add every space, sum the load, size exits + egress to the total (the permit workflow)
+- **Egress** — minimum exits (§1006.3), single-exit ceilings (Table 1006.2.1), required width (§1005.3), common path, travel distance (Table 1017.2), exit separation (§1007.1.1)
+- **Plumbing fixtures** — minimum water closets/lavatories/fountains (Table 2902.1) across 10 occupancies
+- **Maximum-occupancy sign** — compute the number and print a clean §1004.9 sign
 
 Every code value is transcribed verbatim and cross-checked against independent authoritative reproductions — nothing is fabricated. See `/methodology` for sources.
 

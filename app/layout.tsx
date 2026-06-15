@@ -38,6 +38,8 @@ function Footer() {
       <div className="mx-auto max-w-5xl px-5 py-8 text-sm text-slate-500">
         <div className="flex flex-wrap gap-x-6 gap-y-2">
           <Link href="/calculators/occupant-load-calculator" className="hover:text-slate-900">Occupant load</Link>
+          <Link href="/calculators/building-occupant-load-calculator" className="hover:text-slate-900">Whole building</Link>
+          <Link href="/calculators/maximum-occupancy-sign" className="hover:text-slate-900">Occupancy sign</Link>
           <Link href="/calculators/maximum-occupancy-calculator" className="hover:text-slate-900">Maximum occupancy</Link>
           <Link href="/calculators/egress-width-calculator" className="hover:text-slate-900">Egress width</Link>
           <Link href="/calculators/number-of-exits-calculator" className="hover:text-slate-900">Number of exits</Link>
@@ -48,7 +50,7 @@ function Footer() {
           <Link href="/blog" className="hover:text-slate-900">Guides</Link>
           <Link href="/methodology" className="hover:text-slate-900">Methodology</Link>
         </div>
-        <p className="mt-4 max-w-2xl text-xs text-slate-500">
+        <p className="mt-4 max-w-2xl text-xs text-slate-600">
           {SITE.name} provides free building-code occupancy, egress and plumbing-fixture calculators based on the
           {" "}{SITE.codeEdition}. It is general information, not engineering or code-compliance advice — building
           codes vary by jurisdiction and edition and carry local amendments, so confirm any figure with your
